@@ -4,10 +4,14 @@
   "private": true,
   "scripts": {
     "studio": "remotion studio src/index.ts --no-open",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preview": "vite --host 0.0.0.0 --port 4173",
+    "build:preview": "vite build",
+    "serve:preview": "vite preview --host 0.0.0.0 --port 4173"
   },
   "dependencies": {
     "@remotion/cli": "4.0.538",
+    "@remotion/player": "4.0.538",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.538",
@@ -16,6 +20,7 @@
   "devDependencies": {
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vite": "^6.4.1"
   }
 }

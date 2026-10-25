@@ -1,0 +1,8 @@
+:root { font-family: system-ui, sans-serif; color: #f1ebdd; background: #12363b; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 620px; margin: 0 auto; padding: max(20px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom)); }
+h1 { margin: 0 0 10px; font-size: 22px; font-weight: 500; }
+p { margin: 0 0 16px; font-size: 15px; line-height: 1.5; }
+.player { width: min(100%, 57vh); margin: 0 auto; border: 1px solid #f1ebdd33; border-radius: 12px; overflow: hidden; }
+.details { margin: 16px 0 0; text-align: center; opacity: 0.65; font-size: 12px; }
