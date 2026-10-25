@@ -23,12 +23,24 @@ npm run studio
 `npm run preview` запускает отдельную адаптивную страницу с Remotion Player
 на порту 4173. Нажмите ▶; анимация повторяется. Автовоспроизведение не требуется.
 
-Для публичной ссылки:
+## Публикация через GitHub Pages
 
-1. Выполните `npm run build:preview` (сборка сайта, не рендер видео).
-2. На компьютере откройте https://app.netlify.com/drop и войдите в Netlify.
-3. Перетащите папку `dist` в окно загрузки.
-4. Откройте выданную HTTPS-ссылку в Safari на iPhone или iPad и нажмите ▶.
+Workflow `.github/workflows/pages.yml` собирает существующий предпросмотр
+и публикует сайт при изменениях в `main`. MP4 не создаётся.
+
+На iPhone в Safari войдите на GitHub и откройте репозиторий:
+
+1. Settings → Pages → Build and deployment → Source → GitHub Actions.
+2. Actions → Publish slide two preview → Run workflow → main → Run workflow.
+3. Дождитесь зелёной отметки. Откройте завершённый запуск и ссылку
+   в блоке `deploy` / `github-pages`.
+4. В открывшейся странице нажмите ▶.
+
+Ожидаемый адрес после успешной публикации:
+https://khmel84-cyber.github.io/Cambodia-Carousel-Studio/
+
+Если меню GitHub скрыто на мобильном экране, используйте меню «…» репозитория
+или в меню Safari выберите «Запросить настольный веб-сайт».
 
 Вся анимация работает в браузере, без MP4, внешних изображений и API-ключей.
 Адрес localhost облачной среды недоступен с телефона; для него нужна публичная
