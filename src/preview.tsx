@@ -1,6 +1,7 @@
 import {createRoot} from 'react-dom/client';
 import {Player} from '@remotion/player';
 import {SlideTwo} from './SlideTwo';
+import {SLIDE_FORMAT} from './timing';
 import './preview.css';
 
 const Preview = () => (
@@ -10,10 +11,10 @@ const Preview = () => (
     <div className="player">
       <Player
         component={SlideTwo}
-        compositionWidth={1080}
-        compositionHeight={1350}
-        durationInFrames={180}
-        fps={30}
+        compositionWidth={SLIDE_FORMAT.width}
+        compositionHeight={SLIDE_FORMAT.height}
+        durationInFrames={SLIDE_FORMAT.durationInFrames}
+        fps={SLIDE_FORMAT.fps}
         controls
         loop
         showVolumeControls={false}
@@ -21,7 +22,7 @@ const Preview = () => (
         style={{width: '100%', aspectRatio: '4 / 5'}}
       />
     </div>
-    <p className="details">6 секунд · 30 кадров/с · 1080 × 1350</p>
+    <p className="details">2 секунды · 60 кадров · 30 кадров/с · 1080 × 1350</p>
   </main>
 );
 

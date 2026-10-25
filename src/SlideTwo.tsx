@@ -1,16 +1,18 @@
-import {AbsoluteFill, Composition, Easing, interpolate, useCurrentFrame, useVideoConfig} from 'remotion';
+import {AbsoluteFill, Composition, Easing, interpolate, useCurrentFrame} from 'remotion';
 import {svgPathProperties} from 'svg-path-properties';
+import {MOTION_END_FRAME, SLIDE_FORMAT} from './timing';
 
 // The crossing and each cubic join share a horizontal tangent. The house
-// follows this exact SVG path at constant arc-length speed through the loop.
+// follows this exact SVG geometry, with eased arc-length progress.
 export const ROUTE = 'M 100 830 C 230 830 360 740 540 740 C 780 740 880 510 720 440 C 560 370 340 480 340 600 C 340 710 440 740 540 740 C 720 740 820 830 980 830';
-const route = new svgPathProperties(ROUTE);
+// Invisible horizontal extensions let the whole house enter/leave the frame.
+// The visible line and all original loop control points remain unchanged.
+const route = new svgPathProperties(`M -80 830 L 100 830 ${ROUTE.slice('M 100 830 '.length)} L 1160 830`);
 const length = route.getTotalLength();
 
 export const SlideTwo = () => {
   const frame = useCurrentFrame();
-  const {fps, durationInFrames} = useVideoConfig();
-  const progress = interpolate(frame, [0.35 * fps, durationInFrames - 0.35 * fps - 1], [0, 1], {
+  const progress = interpolate(frame, [0, MOTION_END_FRAME.slide2], [0, 1], {
     easing: Easing.bezier(0.3, 0, 0.7, 1),
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
@@ -39,5 +41,5 @@ export const SlideTwo = () => {
 };
 
 export const RemotionRoot = () => (
-  <Composition id="SlideTwo" component={SlideTwo} width={1080} height={1350} fps={30} durationInFrames={180} />
+  <Composition id="SlideTwo" component={SlideTwo} width={SLIDE_FORMAT.width} height={SLIDE_FORMAT.height} fps={SLIDE_FORMAT.fps} durationInFrames={SLIDE_FORMAT.durationInFrames} />
 );
