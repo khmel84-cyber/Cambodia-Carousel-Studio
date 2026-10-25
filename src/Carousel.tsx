@@ -1,5 +1,5 @@
 import type {CSSProperties} from 'react';
-import {AbsoluteFill, Composition, Easing, Img, interpolate, staticFile, useCurrentFrame} from 'remotion';
+import {AbsoluteFill, Composition, Easing, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {svgPathProperties} from 'svg-path-properties';
 import {ROUTE} from './SlideTwo';
 
@@ -18,7 +18,7 @@ export const paths = {
 };
 const routeProperties = Object.fromEntries(Object.entries(paths).map(([key, path]) => [key, new svgPathProperties(path)])) as Record<SlideNumber, InstanceType<typeof svgPathProperties>>;
 
-const House = () => <g fill={terracotta} stroke="#12363B" strokeWidth="5" strokeLinejoin="round">
+export const House = () => <g fill={terracotta} stroke="#12363B" strokeWidth="5" strokeLinejoin="round">
   <path d="M -41 -48 L -41 -3 Q -41 0 -38 0 L 38 0 Q 41 0 41 -3 L 41 -48 Z" />
   <path d="M -54 -46 L 0 -94 L 54 -46 Z" />
   <path d="M -10 0 V -29 Q -10 -35 -4 -35 H 4 Q 10 -35 10 -29 V 0" fill="#12363B" stroke="none" />
@@ -35,8 +35,7 @@ const Feature = ({x, kind, title, subtitle}: {x:number; kind:'key'|'gear'|'coins
   <text x="0" y="196" fill={cream} stroke="none" fontFamily="Arial, sans-serif" fontSize="24">{subtitle}</text>
 </g>;
 
-export const CarouselSlide = ({slide, photo}: SlideProps) => {
-  const frame = useCurrentFrame();
+export const getHousePose = (slide: SlideNumber, frame: number) => {
   const motionEnd = slide < 3 ? 54 : slide === 3 ? 59 : 45;
   const progress = interpolate(frame, [0, motionEnd], [0, 1], {easing: Easing.bezier(.3, 0, .7, 1), extrapolateLeft: 'clamp', extrapolateRight: 'clamp'});
   const route = routeProperties[slide];
@@ -44,10 +43,16 @@ export const CarouselSlide = ({slide, photo}: SlideProps) => {
   const distance = route.getTotalLength() * progress * (slide === 3 ? .77 : slide === 4 ? .91 : 1);
   const point = route.getPointAtLength(distance);
   const tangent = route.getTangentAtLength(distance);
+  return {x:point.x,y:point.y,angle:Math.max(-8,Math.min(8,tangent.y*8))};
+};
+
+export const CarouselSlide = ({slide, photo}: SlideProps) => {
+  const frame = useCurrentFrame();
+  const pose = getHousePose(slide,frame);
   const positions = {1:'0% 0%',2:'100% 0%',3:'0% 100%',4:'100% 100%'};
-  return <AbsoluteFill style={{backgroundColor:'#12363B',color:cream,fontFamily:'Arial, sans-serif',overflow:'hidden'}}>
+  return <AbsoluteFill data-export-canvas="true" data-export-slide={slide} style={{backgroundColor:'#12363B',color:cream,fontFamily:'Arial, sans-serif',overflow:'hidden'}}>
     <div style={{position:'absolute',inset:0, ...(slide===2?{right:'55%'}:{}) ,overflow:'hidden'}}>
-      {photo ? <Img src={photo} style={{width:'100%',height:'100%',objectFit:'cover'}} /> : <div style={{width:'100%',height:'100%',backgroundImage:`url("${staticFile('photos/reference-backgrounds.png')}")`,backgroundSize:'200% 200%',backgroundPosition:positions[slide]}} />}
+      {photo ? <div style={{width:'100%',height:'100%',backgroundImage:`url("${photo}")`,backgroundSize:'cover',backgroundPosition:'center'}} /> : <div style={{width:'100%',height:'100%',backgroundImage:`url("${staticFile('photos/reference-backgrounds.png')}")`,backgroundSize:'200% 200%',backgroundPosition:positions[slide]}} />}
     </div>
     <AbsoluteFill style={{background: slide===1 ? 'linear-gradient(180deg, transparent 23%, rgba(18,54,59,.12) 38%, #102F32 76%)' : slide===2 ? 'linear-gradient(180deg, transparent 55%, #102F32 90%)' : slide===3 ? 'linear-gradient(90deg, rgba(10,37,40,.94), rgba(10,37,40,.57) 70%, rgba(10,37,40,.22))' : 'linear-gradient(90deg, rgba(10,37,40,.94), rgba(10,37,40,.74) 39%, transparent 78%)'}} />
     <div style={{position:'absolute',left:60,top:65,fontSize:27}}>{String(slide).padStart(2,'0')} / 04</div>
@@ -58,7 +63,7 @@ export const CarouselSlide = ({slide, photo}: SlideProps) => {
     <svg width="1080" height="1350" style={{position:'absolute',inset:0}} aria-label="Домик движется по линии">
       <path d={paths[slide]} fill="none" stroke={cream} strokeWidth="3" strokeLinecap="round" />
       {slide!==3 && <path d={slide===4?'M 1008 1203 L 1020 1215 L 1008 1227':slide===2?'M 1008 1218.5 L 1020 1230.5 L 1008 1242.5':'M 1008 1218 L 1020 1230 L 1008 1242'} fill="none" stroke={cream} strokeWidth="3"/>}
-      <g transform={`translate(${point.x} ${point.y}) rotate(${Math.max(-8,Math.min(8,tangent.y*8))}) scale(.65)`}><House/></g>
+      <g data-house="true" transform={`translate(${pose.x} ${pose.y}) rotate(${pose.angle}) scale(.65)`}><House/></g>
     </svg>
   </AbsoluteFill>;
 };

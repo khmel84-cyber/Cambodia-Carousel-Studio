@@ -41,5 +41,49 @@ After a successful deploy open:
 https://khmel84-cyber.github.io/Cambodia-Carousel-Studio/
 
 The site plays animation in the browser; it does not export video.
-Future deliverables are four individual silent H.264 MP4 files. No MP4 rendering
-is performed by the preview or deployment workflow.
+The export buttons generate four individual silent H.264 MP4 files on demand.
+Building or deploying the site does not generate MP4 files.
+
+## Local MP4 export on iPhone
+
+«Скачать MP4» prepares the selected slide. «Скачать все 4 видео» prepares four
+individual videos sequentially, without a ZIP. Each result has an actual MP4
+preview, a Save/share button and a download link. In Safari use Save → Save Video
+(or Save to Files). Four-file export intentionally leaves four Save buttons:
+Safari may block multiple automatic downloads and requires a user gesture to share.
+
+Output is 1080 × 1350, H.264 AVC, yuv420p in the software path, 30 FPS, exactly 60
+frames / 2 seconds, no audio track. The MP4 container is parsed and checked for AVC, dimensions, duration,
+60 packets / 30 FPS, and absence of audio before it is offered for download.
+This validation does not depend on Safari autoplay permissions. Keep Safari in the foreground.
+
+Photographs are stored as Blobs in IndexedDB, never uploaded. Old releases stored
+photos only in page memory: those cannot be recovered after that page reloads.
+They must be selected once more. Private browsing or clearing site data can remove
+stored photographs. The UI explicitly identifies when a sample photo is being used.
+
+`src/exportVideo.tsx` captures the static photo/HTML/SVG layers once at native
+resolution with html2canvas, then draws the shared original `House` using the same
+`getHousePose()` as Remotion for frames 0–59. It does not record a real-time player,
+so background throttling cannot silently create dropped-frame recordings.
+
+The preferred codec is the device's WebCodecs AVC encoder through Mediabunny.
+When unavailable or failing, a single-thread FFmpeg WebAssembly worker encodes
+with libx264. This works without a render server, cross-origin isolation headers,
+or access to local photos from GitHub. The approximately 32 MB encoder downloads
+from the same Pages site only when needed. On older phones export one slide at a
+time if the browser runs out of memory; errors do not produce fake MP4 files.
+
+`npm ci` / `npm run build:preview` copies the pinned FFmpeg worker/core into ignored
+`public/ffmpeg/`; the Pages workflow publishes these generated files with the site.
+`?software-export` forces the fallback for reproducible validation.
+
+Validation performed in Chromium at a mobile viewport with four uploaded test
+photographs: IndexedDB recovery after reload, four real software-encoded videos,
+ffprobe verification of codec/size/FPS/frame count/duration/no audio, decoded frame
+checks for each distinct uploaded image, text and house motion, and the final hold
+on slide 4. Physical iPhone/Safari validation is still required on the target device.
+
+FFmpeg.wasm core includes FFmpeg and libx264. Their respective license/source
+information is available at https://github.com/ffmpegwasm/ffmpeg.wasm and
+https://github.com/ffmpegwasm/ffmpeg.wasm/tree/main/packages/core.

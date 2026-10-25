@@ -6,12 +6,17 @@
     "studio": "remotion studio src/index.ts --no-open",
     "typecheck": "tsc --noEmit",
     "preview": "vite --host 0.0.0.0 --port 4173",
-    "build:preview": "vite build",
-    "serve:preview": "vite preview --host 0.0.0.0 --port 4173"
+    "build:preview": "node scripts/prepare-export.mjs && vite build",
+    "serve:preview": "vite preview --host 0.0.0.0 --port 4173",
+    "postinstall": "node scripts/prepare-export.mjs"
   },
   "dependencies": {
+    "@ffmpeg/core": "0.12.10",
+    "@ffmpeg/ffmpeg": "0.12.15",
     "@remotion/cli": "4.0.538",
     "@remotion/player": "4.0.538",
+    "html2canvas": "1.4.1",
+    "mediabunny": "1.39.2",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.538",
