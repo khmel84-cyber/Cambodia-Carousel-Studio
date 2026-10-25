@@ -1,54 +1,45 @@
 # Cambodia Carousel Studio
 
-Базовая анимация второго слайда: SVG-домик движется вдоль линии и проходит петлю.
-Композиция `SlideTwo`: 1080 × 1350, 30 FPS, 60 кадров (2 секунды).
-Домик въезжает из-за левой границы, проходит прежнюю петлю и полностью
-уезжает за правую границу к кадру 54 (1,8 секунды). Исходная линия не изменена.
-Единый формат и временные точки для четырёх слайдов описаны в `src/timing.ts`.
-В репозитории пока присутствует только слайд 2; слайды 1, 3 и 4 не созданы
-и требуют исходного дизайна, текстов, фотографий и траекторий.
-Требование к будущему экспорту: четыре отдельных MP4, H.264, без звука.
-Экспорт не запускался, команды предпросмотра создают только сайт.
-Цвета: фон `#12363B`, линия `#F1EBDD`, домик `#B7654D`.
-Анимация вычисляется по номеру кадра; внешние изображения и шрифты не нужны.
+Four editable React/SVG carousel slides based on the supplied visual reference.
+Every composition is 1080 × 1350, 30 FPS, 60 frames (2 seconds).
+Headings, body copy, slide numbers, feature icons, CTA, line and house are separate
+HTML/SVG layers. Photographs are generated approximations without baked-in text;
+the fourth portrait is temporary, not the author's real photo.
 
-## Предпросмотр
+## Preview
 
-```bash
+```
 npm ci
-npm run studio
+npm run preview
 ```
 
-Откройте адрес, напечатанный Remotion Studio, и выберите `SlideTwo`.
-Кнопка Play запускает анимацию; ползунок позволяет просматривать отдельные кадры.
-Команды выше не экспортируют видео.
+Select 01–04, then press «Воспроизвести». The player loops the current slide.
+The upload panel replaces the current photo in browser memory; nothing is uploaded.
+Clean portrait photos work best at 1080 × 1350. Changes disappear on reload.
 
-Проверка TypeScript: `npm run typecheck`.
+`npm run studio` opens the four compositions in Remotion Studio.
+`npm run typecheck` checks TypeScript. `npm run build:preview` builds the static site.
 
-## Просмотр на iPhone / iPad
+## Layout and motion
 
-`npm run preview` запускает отдельную адаптивную страницу с Remotion Player
-на порту 4173. Нажмите ▶; анимация повторяется. Автовоспроизведение не требуется.
+- `src/Carousel.tsx`: four layouts and motion paths, shared original house.
+- `src/SlideTwo.tsx`: preserved original second-slide path and earlier composition.
+- `src/preview.tsx`: mobile tabs, playback and temporary image replacement.
+- `public/photos/reference-backgrounds.png`: clean generated photographic asset sheet.
 
-## Публикация через GitHub Pages
+The original second-slide curve is uniformly scaled and translated to the bottom
+of its layout, without changing its control-point geometry. Slides 1/2 enter and
+leave in 1.8 seconds; slide 3 stops near the papers on its last frame; slide 4
+finishes at frame 45 and holds for 15 frames. All text and photos are stationary.
 
-Workflow `.github/workflows/pages.yml` собирает существующий предпросмотр
-и публикует сайт при изменениях в `main`. MP4 не создаётся.
+## GitHub Pages
 
-На iPhone в Safari войдите на GitHub и откройте репозиторий:
-
-1. Settings → Pages → Build and deployment → Source → GitHub Actions.
-2. Actions → Publish slide two preview → Run workflow → main → Run workflow.
-3. Дождитесь зелёной отметки. Откройте завершённый запуск и ссылку
-   в блоке `deploy` / `github-pages`.
-4. В открывшейся странице нажмите ▶.
-
-Ожидаемый адрес после успешной публикации:
+`.github/workflows/pages.yml` builds and deploys on pushes to `main`.
+Repository Settings → Pages → Source must be **GitHub Actions**.
+On iPhone open Actions → Publish slide two preview → latest run and check its status.
+After a successful deploy open:
 https://khmel84-cyber.github.io/Cambodia-Carousel-Studio/
 
-Если меню GitHub скрыто на мобильном экране, используйте меню «…» репозитория
-или в меню Safari выберите «Запросить настольный веб-сайт».
-
-Вся анимация работает в браузере, без MP4, внешних изображений и API-ключей.
-Адрес localhost облачной среды недоступен с телефона; для него нужна публичная
-ссылка либо Preview с перенаправлением порта 4173, если интерфейс среды это поддерживает.
+The site plays animation in the browser; it does not export video.
+Future deliverables are four individual silent H.264 MP4 files. No MP4 rendering
+is performed by the preview or deployment workflow.

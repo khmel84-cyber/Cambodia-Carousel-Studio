@@ -1,4 +1,3 @@
 import {registerRoot} from 'remotion';
-import {RemotionRoot} from './SlideTwo';
-
-registerRoot(RemotionRoot);
+import {CarouselRoot} from './Carousel';
+registerRoot(CarouselRoot);
